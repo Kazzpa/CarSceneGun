@@ -947,7 +947,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1825945636609246}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0b44f2d2d9ca0ed4784b9bb40d15965d, type: 3}
   m_Name: 
@@ -955,6 +955,7 @@ MonoBehaviour:
   rb: {fileID: 54460563495049156}
   ForceZ: 1200
   ForceX: 600
+  Deceleration: 0
 --- !u!114 &114117353746493688
 MonoBehaviour:
   m_ObjectHideFlags: 1
