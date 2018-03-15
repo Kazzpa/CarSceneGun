@@ -6,7 +6,7 @@ public class PlayerMovement : MonoBehaviour {
 	public Rigidbody rb;
 	private float ForceZ = 5;
 	private float ForceX = 9;
-	public float MaxZ ;
+	public float MaxZ;
 	private float MinZ = 15;
     private float aux;
 	private double h;
@@ -31,8 +31,8 @@ public class PlayerMovement : MonoBehaviour {
 			}
 
 		} else if(ForceZ < MaxZ){//Restoring speed
-			aux = ForceZ + 1;
-			if (aux < MaxZ) {
+			aux =  ForceZ + (MaxZ - ForceZ ) * (float) 0.08;
+			if (aux < MaxZ -0.1) {
 				ForceZ = aux;
 			} else {
 				ForceZ = MaxZ;
