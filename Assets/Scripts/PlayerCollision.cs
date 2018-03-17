@@ -20,7 +20,9 @@ public class PlayerCollision : MonoBehaviour {
         fin = 2;
         speed = 1.4f;//MultiplyFactor
     }
+    
     void OnCollisionEnter (Collision col) {
+        //Collision with obstacle
 		if (col.collider.tag.Equals("Obstacle")) {
             movement.enabled = false;
             audio.Play();
@@ -32,7 +34,7 @@ public class PlayerCollision : MonoBehaviour {
 	}
     private void Update()
     {
-        //xD
+        //Endgame if collisioned
         if (collision)
         {
             delayScene += Time.deltaTime;
@@ -41,6 +43,7 @@ public class PlayerCollision : MonoBehaviour {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
+        //Quit game with ESCAPE
         if (Input.GetKey(KeyCode.Escape))
         {
             Application.Quit();

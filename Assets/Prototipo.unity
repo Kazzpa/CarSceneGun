@@ -1602,7 +1602,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.76
+  m_Radius: 0.37
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!33 &884887809
 MeshFilter:
@@ -1635,7 +1635,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35e5273b701cb8443846dab6cb0e211b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sphere: {fileID: 0}
   audio2: {fileID: 884887812}
 --- !u!82 &884887812
 AudioSource:

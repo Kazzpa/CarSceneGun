@@ -4,31 +4,31 @@ using UnityEngine;
 
 public class PowerUpSpeed : MonoBehaviour
 {
-    public GameObject sphere;
     Rigidbody rb;
+    SphereCollider sc;
+    MeshRenderer mr;
+    PlayerMovement pm;
     public AudioSource audio2;
     float speed  = 1.4f;
-
-    private void OnTriggerEnter(Collider col)
+    private void Start()
+    {
+        sc = GetComponent<SphereCollider>();
+        mr = GetComponent<MeshRenderer>();
+    }
+    private void OnTriggerEnter(Collider other)
     {
         Debug.Log("Choque");
-        rb = col.GetComponent<Rigidbody>();
-        if (col.tag.Equals("Player"))
+        rb = other.GetComponent<Rigidbody>();
+        pm = other.GetComponent<PlayerMovement>();
+        if (other.CompareTag("Player"))
         {
+            Debug.Log("Ifaso");
             audio2.Play();
-            acellerate(speed);
+            pm.acellerate(speed);
+            sc.enabled = false;
+            mr.enabled = false;
         }
     }
 
-    public void acellerate(float speed)
-    {
-        Debug.Log("Aceleracion");
-        float t = Time.deltaTime;
-        while (t < 3)
-        {
-            t = Time.deltaTime;
-            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z * speed);
-        }
-        Destroy(sphere);
-    }
+    
 }
