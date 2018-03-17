@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour {
 	public Text debug;
 	// Use this for initialization
 	void Start () {
+        rb = GetComponent<Rigidbody>();
 		Debug.Log ("Ha empesao");
 		debug.text = "Pulse A,S,D";
 	}
@@ -31,14 +32,14 @@ public class PlayerMovement : MonoBehaviour {
 			}
 
 		} else if(ForceZ < MaxZ){//Restoring speed
-			aux =  ForceZ + (MaxZ - ForceZ ) * (float) 0.08;
+			aux =  ForceZ + (MaxZ - ForceZ ) * 0.08f;
 			if (aux < MaxZ -0.1) {
 				ForceZ = aux;
 			} else {
 				ForceZ = MaxZ;
 			}
 		}
-		rb.velocity = new Vector3 (ForceX * (float)h, 0, ForceZ);
+		rb.velocity = new Vector3 (ForceX * (float) h, 0, ForceZ);
         //DEBUG TEXT
         if (h > 0)
         {

@@ -1,27 +1,51 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerCollision : MonoBehaviour {
 
-	public PlayerMovement movement;
-    public Rigidbody rb;
+	PlayerMovement movement;
     public AudioSource audio;
-    public float duration;
-	// Use this for initialization
-	void OnCollisionEnter (Collision col) {
-		if (col.collider.tag == "Obstacle") {
-            if (!audio.isPlaying)
-            {
-                audio.enabled = false;
-            }
-			Debug.Log (col.collider.tag + " hit");
-            audio.enabled = true;
-			movement.enabled = false;
-            rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionY;
+    float duration;
+    float delayScene;
+    float speed;
+    float fin;
+    bool collision;
+    // Use this for initialization
+    private void Start()
+    {
+        movement = GetComponent<PlayerMovement>();
+        delayScene = 0;
+        fin = 2;
+        speed = 1.4f;//MultiplyFactor
+    }
+    void OnCollisionEnter (Collision col) {
+		if (col.collider.tag.Equals("Obstacle")) {
+            movement.enabled = false;
+            audio.Play();
             rotate360();
+            collision = true;
+
 		}
+
 	}
+    private void Update()
+    {
+        //xD
+        if (collision)
+        {
+            delayScene += Time.deltaTime;
+            if(delayScene > fin)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+        }
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+    }
     IEnumerator rotate360()
     {
         float startRotation = transform.eulerAngles.y;
