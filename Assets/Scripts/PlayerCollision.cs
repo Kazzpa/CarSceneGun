@@ -6,26 +6,26 @@ using UnityEngine.SceneManagement;
 public class PlayerCollision : MonoBehaviour {
 
 	PlayerMovement movement;
-    public AudioSource audio;
+    AudioSource hit;
     float duration;
     float delayScene;
-    float speed;
     float fin;
     bool collision;
     // Use this for initialization
     private void Start()
     {
+        hit = GetComponent<AudioSource>();
         movement = GetComponent<PlayerMovement>();
         delayScene = 0;
         fin = 2;
-        speed = 1.4f;//MultiplyFactor
+        duration = 5;
     }
     
     void OnCollisionEnter (Collision col) {
         //Collision with obstacle
 		if (col.collider.tag.Equals("Obstacle")) {
             movement.enabled = false;
-            audio.Play();
+            hit.Play();
             rotate360();
             collision = true;
 

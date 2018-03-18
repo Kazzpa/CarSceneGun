@@ -4,27 +4,26 @@ using UnityEngine;
 
 public class PowerUpSpeed : MonoBehaviour
 {
-    Rigidbody rb;
     SphereCollider sc;
     MeshRenderer mr;
     PlayerMovement pm;
     public AudioSource audio2;
-    float speed  = 1.4f;
+    float speed  = 10f;
     private void Start()
     {
         sc = GetComponent<SphereCollider>();
         mr = GetComponent<MeshRenderer>();
+       // pm = GameObject.Find("Skycar").GetComponent<PlayerMovement>();
     }
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log("Choque");
-        rb = other.GetComponent<Rigidbody>();
         pm = other.GetComponent<PlayerMovement>();
         if (other.CompareTag("Player"))
         {
             Debug.Log("Ifaso");
             audio2.Play();
-            pm.acellerate(speed);
+            pm.Acellerate();
             sc.enabled = false;
             mr.enabled = false;
         }
