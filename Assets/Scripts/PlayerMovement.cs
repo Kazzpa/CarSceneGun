@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using TMPro;
 using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour {
@@ -6,7 +7,7 @@ public class PlayerMovement : MonoBehaviour {
 	public Rigidbody rb;
 	private float ForceZ = 5;
 	private float ForceX = 9;
-	public float MaxZ;
+	public float MaxZ = 30;
 	private float MinZ = 15;
     private float aux;
     private float t;
@@ -16,12 +17,14 @@ public class PlayerMovement : MonoBehaviour {
 	private double v;
     private bool aceleracion;
     public GameObject speedEffect;
-	public Text debug;
+	public TextMeshPro debug;
+    public TextMeshPro speedometer;
 	// Use this for initialization
 	void Start () {
         rb = GetComponent<Rigidbody>();
 		Debug.Log ("Ha empesao");
-		debug.text = "Pulse A,S,D";
+		debug.SetText("Pulse A,S,D");
+        speedometer.SetText("Speed 0");
         speedEffect.SetActive(false);
     }
 
@@ -60,9 +63,12 @@ public class PlayerMovement : MonoBehaviour {
                 }
             }
             rb.velocity = new Vector3(ForceX * (float)h, 0, ForceZ);
+            float auxspeed = ForceZ * (120 / MaxZ);
+            speedometer.SetText("Speed " + auxspeed.ToString("0.0"));
 
 
-        }else{
+        }
+        else{
             
             t += Time.deltaTime;
             speedEffect.SetActive(true);
@@ -71,6 +77,8 @@ public class PlayerMovement : MonoBehaviour {
             {
 
                 rb.velocity = new Vector3(ForceX * (float)h , 0, ForceZ * speed);
+                float auxspeed = ForceZ * (120 / MaxZ);
+                speedometer.SetText("Speed " + auxspeed.ToString("0.0"));
                 if (speed > 1)
                 {
                     speed -= 0.5f;
@@ -89,19 +97,19 @@ public class PlayerMovement : MonoBehaviour {
         //DEBUG TEXT
         if (h > 0)
         {
-            debug.text = "Derecha";
+            debug.SetText("Derecha");
         }
         else if(h <0)
         {
-            debug.text = "Izquierda";
+            debug.SetText("Izquierda");
         }
         else if( v < 0)
         {
-            debug.text = "Frenando";
+            debug.SetText("Frenando");
         }
         else
         {
-            debug.text = "Presione A,S,D";
+            debug.SetText("Presione A,S,D");
         }
 
 	}
