@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
+using TMPro;
+using System.Collections;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class PlayerMovement : MonoBehaviour {
 
 	public Rigidbody rb;
+    public CameraController cc;
 	private float ForceZ = 5;
 	private float ForceX = 9;
-	public float MaxZ;
+	public float MaxZ = 30;
 	private float MinZ = 15;
     private float aux;
     private float t;
@@ -14,21 +18,33 @@ public class PlayerMovement : MonoBehaviour {
     private float maxSpeed = 10f;
 	private double h;
 	private double v;
+    private bool k;
+    private int score = 0;
     private bool aceleracion;
+    private bool collisioned;
+    List<PowerUpSpeed> bonus;
     public GameObject speedEffect;
-	public Text debug;
-	// Use this for initialization
-	void Start () {
+	public TextMeshPro debug;
+    public TextMeshPro UISpeed;
+    public TextMeshPro UIScore;
+    public TextMeshPro UIScoreAlert;
+    // Use this for initialization
+    void Start () {
+        Debug.Log("Start");
+        bonus = new List<PowerUpSpeed>();
         rb = GetComponent<Rigidbody>();
-		Debug.Log ("Ha empesao");
-		debug.text = "Pulse A,S,D";
+		debug.SetText("Pulse A,S,D");
+        UISpeed.SetText("Speed 0");
+        UIScore.SetText("Score: 0");
+        UIScoreAlert.enabled = false;
         speedEffect.SetActive(false);
     }
 
-	void Update(){
-            h = Input.GetAxis("Horizontal");    //Gets -1, 0,1
-            v = Input.GetAxis("Vertical");      //Gets -1 , 0 ,1
-        
+    void Update() {
+        h = Input.GetAxis("Horizontal");    //Gets -1, 0,1
+        v = Input.GetAxis("Vertical");      //Gets -1 , 0 ,1
+        k = Input.GetKey("escape");     //returns true if pressed
+        if (!collisioned) { 
         if (!aceleracion)
         {
             t = 0;
@@ -60,22 +76,26 @@ public class PlayerMovement : MonoBehaviour {
                 }
             }
             rb.velocity = new Vector3(ForceX * (float)h, 0, ForceZ);
+            float auxspeed = ForceZ * (120 / MaxZ);
+            UISpeed.SetText("Speed " + auxspeed.ToString("0.0"));
 
 
-        }else{
-            
+        }
+        else {
+
             t += Time.deltaTime;
             speedEffect.SetActive(true);
-            
+
             if (t < 1)
             {
 
-                rb.velocity = new Vector3(ForceX * (float)h , 0, ForceZ * speed);
+                rb.velocity = new Vector3(ForceX * (float)h, 0, ForceZ * speed);
+                float auxspeed = ForceZ * ((120 + speed) / MaxZ);
+                UISpeed.SetText("Speed " + auxspeed.ToString("0.0"));
                 if (speed > 1)
                 {
                     speed -= 0.5f;
                 }
-                Debug.Log(speed);                
             }
             else
             {
@@ -89,26 +109,68 @@ public class PlayerMovement : MonoBehaviour {
         //DEBUG TEXT
         if (h > 0)
         {
-            debug.text = "Derecha";
+            debug.SetText("Derecha");
         }
-        else if(h <0)
+        else if (h < 0)
         {
-            debug.text = "Izquierda";
+            debug.SetText("Izquierda");
         }
-        else if( v < 0)
+        else if (v < 0)
         {
-            debug.text = "Frenando";
+            debug.SetText("Frenando");
         }
         else
         {
-            debug.text = "Presione A,S,D";
+            debug.SetText("Presione A,S,D");
         }
-
+        }
+        if (k)
+        {
+            RestartGame();
+        }
 	}
+    public void RestartGame()
+    {
+        Debug.Log("Reinicio");
+        collisioned = true;
+        debug.SetText("Pulse A,S,D");
+        UISpeed.SetText("Speed 0");
+        UIScore.SetText("Score: 0");
+        UIScoreAlert.enabled = false;
+        speedEffect.SetActive(false);
+        score = 0;
+        rb.position = new Vector3(0, 0.56f, -46);
+        cc.RestartCamera();
+        ActivateBonus();
+
+    }
     public void Acellerate()
     {
         
         aceleracion = true;
         
+    }
+    public void AddPoints(int points)
+    {
+
+        score += points;
+        UIScore.SetText("Score: "+score);
+        UIScoreAlert.enabled = true;
+
+        //UIScoreAlert.enabled = false;
+    }
+    public void RemoveBonus(PowerUpSpeed o)
+    {
+        Debug.Log("añadido bonus");
+        bonus.Add(o);
+    }
+    public void ActivateBonus()
+    {
+        Debug.Log("Activar bonuses");
+        foreach(PowerUpSpeed g in bonus)
+        {
+            g.GetComponent<SphereCollider>().enabled = true;
+            g.GetComponent<MeshRenderer>().enabled = true;
+        }
     }
 }

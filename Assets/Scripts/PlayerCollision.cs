@@ -10,7 +10,6 @@ public class PlayerCollision : MonoBehaviour {
     float duration;
     float delayScene;
     float fin;
-    bool collision;
     // Use this for initialization
     private void Start()
     {
@@ -26,30 +25,12 @@ public class PlayerCollision : MonoBehaviour {
 		if (col.collider.tag.Equals("Obstacle")) {
             movement.enabled = false;
             hit.Play();
-            rotate360();
-            collision = true;
-
+            Rotate360();
+            movement.RestartGame();
 		}
 
 	}
-    private void Update()
-    {
-        //Endgame if collisioned
-        if (collision)
-        {
-            delayScene += Time.deltaTime;
-            if(delayScene > fin)
-            {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            }
-        }
-        //Quit game with ESCAPE
-        if (Input.GetKey(KeyCode.Escape))
-        {
-            Application.Quit();
-        }
-    }
-    IEnumerator rotate360()
+    IEnumerator Rotate360()
     {
         float startRotation = transform.eulerAngles.y;
         float endRotation = startRotation + 360.0f;
