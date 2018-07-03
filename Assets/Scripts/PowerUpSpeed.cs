@@ -1,14 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PowerUpSpeed : MonoBehaviour
 {
     SphereCollider sc;
     MeshRenderer mr;
     PlayerMovement pm;
+    public int points = 10;
     public AudioSource audio2;
-    float speed  = 10f;
     private void Start()
     {
         sc = GetComponent<SphereCollider>();
@@ -17,15 +18,16 @@ public class PowerUpSpeed : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Choque");
         pm = other.GetComponent<PlayerMovement>();
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Ifaso");
             audio2.Play();
             pm.Acellerate();
+            pm.AddPoints(points);
+            pm.RemoveBonus(this);
             sc.enabled = false;
             mr.enabled = false;
+
         }
     }
 

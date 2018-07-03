@@ -9,4 +9,8 @@ public class CameraController : MonoBehaviour {
     void Update () {
 		transform.position = player.position + offset;
 	}
+    public void RestartCamera()
+    {
+        transform.position = new Vector3(0, 4.56f, -56);
+    }
 }
