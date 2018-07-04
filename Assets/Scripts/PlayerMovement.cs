@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public class PlayerMovement : MonoBehaviour {
 
-	public Rigidbody rb;
+	private Rigidbody rb;
     public CameraController cc;
 	private float ForceZ = 5;
 	private float ForceX = 9;
@@ -43,7 +43,12 @@ public class PlayerMovement : MonoBehaviour {
     void Update() {
         h = Input.GetAxis("Horizontal");    //Gets -1, 0,1
         v = Input.GetAxis("Vertical");      //Gets -1 , 0 ,1
-        k = Input.GetKey("escape");     //returns true if pressed
+        k = Input.GetKeyDown("escape");     //returns true if pressed
+        if (k)//restarts game if pressed
+        {
+            Debug.Log("Presionao escape");
+            StartCoroutine(RestartGame(true));
+        }
         if (!collisioned) { 
         if (!aceleracion)
         {
@@ -82,15 +87,13 @@ public class PlayerMovement : MonoBehaviour {
 
         }
         else {
-
             t += Time.deltaTime;
             speedEffect.SetActive(true);
-
             if (t < 1)
             {
-
+                Debug.Log("Aceleracion");
                 rb.velocity = new Vector3(ForceX * (float)h, 0, ForceZ * speed);
-                float auxspeed = ForceZ * ((120 + speed) / MaxZ);
+                float auxspeed = (ForceZ * speed) * (120  / MaxZ);
                 UISpeed.SetText("Speed " + auxspeed.ToString("0.0"));
                 if (speed > 1)
                 {
@@ -99,7 +102,6 @@ public class PlayerMovement : MonoBehaviour {
             }
             else
             {
-
                 speedEffect.SetActive(false);
                 Debug.Log("Hola " + speedEffect.activeSelf);
                 aceleracion = false;
@@ -124,24 +126,21 @@ public class PlayerMovement : MonoBehaviour {
             debug.SetText("Presione A,S,D");
         }
         }
-        if (k)
-        {
-            RestartGame();
-        }
+        
 	}
-    public void RestartGame()
+    public IEnumerator RestartGame(bool manual)
     {
         Debug.Log("Reinicio");
         collisioned = true;
-        debug.SetText("Pulse A,S,D");
-        UISpeed.SetText("Speed 0");
-        UIScore.SetText("Score: 0");
-        UIScoreAlert.enabled = false;
-        speedEffect.SetActive(false);
+        RestartUI();
         score = 0;
-        rb.position = new Vector3(0, 0.56f, -46);
-        cc.RestartCamera();
         ActivateBonus();
+        if (!manual)
+        {
+            yield return new WaitForSeconds(2.8f);
+        }
+        RestartMovement();
+        cc.RestartCamera();
 
     }
     public void Acellerate()
@@ -150,14 +149,33 @@ public class PlayerMovement : MonoBehaviour {
         aceleracion = true;
         
     }
-    public void AddPoints(int points)
+    public void RestartMovement()
+    {
+        transform.position = new Vector3(0, 0.56f, -46);
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        transform.rotation = Quaternion.identity;
+        ForceZ = MinZ;
+        aceleracion = false;
+        collisioned = false;
+
+    }
+    public void RestartUI()
+    {
+        debug.SetText("Pulse A,S,D");
+        UISpeed.SetText("Speed 0");
+        UIScore.SetText("Score: 0");
+        UIScoreAlert.enabled = false;
+        speedEffect.SetActive(false);
+    }
+    public IEnumerator AddPoints(int points)
     {
 
         score += points;
         UIScore.SetText("Score: "+score);
         UIScoreAlert.enabled = true;
-
-        //UIScoreAlert.enabled = false;
+        yield return new WaitForSeconds(0.3f);
+        UIScoreAlert.enabled = false;
     }
     public void RemoveBonus(PowerUpSpeed o)
     {

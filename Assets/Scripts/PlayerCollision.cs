@@ -8,25 +8,22 @@ public class PlayerCollision : MonoBehaviour {
 	PlayerMovement movement;
     AudioSource hit;
     float duration;
-    float delayScene;
-    float fin;
     // Use this for initialization
     private void Start()
     {
         hit = GetComponent<AudioSource>();
         movement = GetComponent<PlayerMovement>();
-        delayScene = 0;
-        fin = 2;
-        duration = 5;
+        duration = 3;
     }
     
     void OnCollisionEnter (Collision col) {
         //Collision with obstacle
 		if (col.collider.tag.Equals("Obstacle")) {
-            movement.enabled = false;
+            Debug.Log("Fracasaste se reinicia");
+            //movement.enabled = false;
             hit.Play();
             Rotate360();
-            movement.RestartGame();
+            StartCoroutine(movement.RestartGame(false));
 		}
 
 	}

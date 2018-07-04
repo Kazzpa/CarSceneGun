@@ -23,11 +23,10 @@ public class PowerUpSpeed : MonoBehaviour
         {
             audio2.Play();
             pm.Acellerate();
-            pm.AddPoints(points);
             pm.RemoveBonus(this);
             sc.enabled = false;
             mr.enabled = false;
-
+            StartCoroutine(pm.AddPoints(points));
         }
     }
 
