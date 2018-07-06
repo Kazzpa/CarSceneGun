@@ -1,17 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+//BOTELLA
+public class PowerUpBoost : MonoBehaviour {
 
-public class PowerUpSpeed : MonoBehaviour
-{
-    BoxCollider sc;
+    SphereCollider bc;
     MeshRenderer mr;
-    public int points = 10;
-    public AudioSource audio2;
     private void Start()
     {
-        sc = GetComponent<BoxCollider>();
+        bc = GetComponent<SphereCollider>();
         mr = GetComponent<MeshRenderer>();
     }
     private void OnTriggerEnter(Collider other)
@@ -20,15 +17,9 @@ public class PowerUpSpeed : MonoBehaviour
         PlayerMovement pm = other.GetComponent<PlayerMovement>();
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Aceleracion objeto");
-            audio2.Play();
-            pm.Acellerate();
-            pm.RemoveBonus(this);
-            sc.enabled = false;
+            pm.AddNitro(this);
+            bc.enabled = false;
             mr.enabled = false;
-            StartCoroutine(pm.AddPoints(points));
         }
     }
-
-    
 }
