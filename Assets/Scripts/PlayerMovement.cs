@@ -13,11 +13,10 @@ public class PlayerMovement : MonoBehaviour {
     private float aux, t,tr, speed = 10f;
     private float maxSpeed = 10f;
     private double h, v;
-    private bool c, k, aceleracion, collisioned,first;
+    private bool c, k, Acelleration, collisioned,first;
     private int score = 0;
     List<PowerUpSpeed> bonus;
     List<PowerUpBoost> boost, boostBackup;
-    public GameObject speedEffect;
     public TextMeshProUGUI debug, UISpeed, UIBoost, UIScore, UIScoreAlert;
     // Use this for initialization
     void Start () {
@@ -32,7 +31,7 @@ public class PlayerMovement : MonoBehaviour {
         UIScore.SetText("Score: 0");
         UIScoreAlert.enabled = false;
         UIBoost.enabled = false;
-        speedEffect.SetActive(false);
+        cc.speedGlitch(false);
     }
     //Handles the speed applied to the Car, and the scene restart.
     void Update() {
@@ -40,22 +39,24 @@ public class PlayerMovement : MonoBehaviour {
         v = Input.GetAxis("Vertical");      //Gets -1 , 0 ,1
         k = Input.GetKeyDown("escape");     //returns true if pressed
         c = Input.GetKeyDown("mouse 0");
-        if (k)//restarts game if pressed
+        //Pressed Escape->Restarts the game.
+        if (k)
         {
             Debug.Log("Presionao escape");
             StartCoroutine(RestartGame(true));
         }
+        //Clicked left mouse ->uses nitro
         if (c)
         {
-            Debug.Log("Click");
             StartCoroutine(UseNitro());
         }
-        //Si colisiona no se mueve.
+        //If collisioned it doesn't move.
         if (!collisioned) { 
         
             t = 0;
-            //Vertical handler
-            if (v == -1)//slowing
+            //Vertical handler:
+            //Slowing
+            if (v == -1)
             {
                 aux = ForceZ - 1;
                 if (aux >= MinZ)
@@ -68,6 +69,7 @@ public class PlayerMovement : MonoBehaviour {
                 }
 
             }
+            //Restoring speed to max
             else if (ForceZ < MaxZ)
             {
                     if (ForceZ < MaxZ)
@@ -83,7 +85,9 @@ public class PlayerMovement : MonoBehaviour {
                         }
                     }
              }
-            else{
+            //Restores speed if recently accellerated
+            else
+            {
                     aux = ForceZ - 10;
                     if (aux >= MaxZ)
                     {
@@ -94,18 +98,17 @@ public class PlayerMovement : MonoBehaviour {
                         ForceZ = MaxZ;
                     }
              }
-            Debug.Log("Esta acelerando?:" + aceleracion.ToString());
-            if (aceleracion)
+            if (Acelleration)
             {
+                //Acelleration starts
                 if (first)
                 {
                     tr = Time.realtimeSinceStartup;
                     first = false;
-                    speedEffect.SetActive(true);
+                    cc.speedGlitch(true);
                 }
                 t = Time.realtimeSinceStartup;
-
-                Debug.Log("time:" + (t - tr).ToString());
+                //Acelleration in process
                 if (t-tr < 1.5f)
                 {
                     rb.velocity = new Vector3(ForceX * (float)h, 0, ForceZ * speed);
@@ -116,15 +119,17 @@ public class PlayerMovement : MonoBehaviour {
                         speed -= 0.5f;
                     }
                 }
+                //Acelleration ends
                 else
                 {
-                    speedEffect.SetActive(false);
-                    Debug.Log("Efectoaceleracion " + speedEffect.activeSelf);
-                    aceleracion = false;
+                    cc.speedGlitch(false);
+                    Debug.Log("Efecto aceleracion " + cc.IsSpeedActive());
+                    Acelleration = false;
                     first = true;
                     speed = maxSpeed;
                 }
             }
+            // Applies the speed corresponding
             else
             {
                 rb.velocity = new Vector3(ForceX * (float)h, 0, ForceZ);
@@ -157,7 +162,7 @@ public class PlayerMovement : MonoBehaviour {
     public void Acellerate()
     {
         first = true;
-        aceleracion = true;
+        Acelleration = true;
     }
     //restart the speed,rotation,and force applied to it
     public void RestartMovement()
@@ -168,7 +173,7 @@ public class PlayerMovement : MonoBehaviour {
         transform.rotation = Quaternion.identity;
         ForceZ = 0;
         first = true;
-        aceleracion = false;
+        Acelleration = false;
         collisioned = false;
 
     }
@@ -179,7 +184,7 @@ public class PlayerMovement : MonoBehaviour {
         UISpeed.SetText("Speed 0");
         UIScore.SetText("Score: 0");
         UIScoreAlert.enabled = false;
-        speedEffect.SetActive(false);
+        cc.speedGlitch(false);
     }
     //Restore the bonuses used
     public void RestoreBonus()
@@ -233,7 +238,6 @@ public class PlayerMovement : MonoBehaviour {
     //Adds the bonus to the list so it can be restored,called from outside
     public void RemoveBonus(PowerUpSpeed o)
     {
-        Debug.Log("añadido bonus");
         bonus.Add(o);
     }
     //Adds the boost to the list so it can be used and restore, called from outside
