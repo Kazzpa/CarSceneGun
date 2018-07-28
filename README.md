@@ -1,5 +1,5 @@
 # CarSceneGun
-A simple car scene with simple code where i try to learn how to make a simple game on Unity.
+A simple car scene with simple code so i can learn how to make a simple game using Unity.
 ## Working:
 * Nitros that can be used whenever you want
 * SpeedBoost on the road, activated automatically
