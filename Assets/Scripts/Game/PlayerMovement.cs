@@ -13,22 +13,19 @@ public class PlayerMovement : MonoBehaviour {
     private Vector3 InitialPosition;
 	private float ForceZ = 5, ForceX = 9;
 	private float MaxZ = 30, MinZ = 15;
-    private float aux, t,tr, speed = 10f;
+    private float aux, t,tr, speed = 1.5f;
     private float maxSpeed = 10f;
     private double h, v;
-    private bool c, k, Acelleration, collisioned,first;
+    private bool c, k, Acelleration, collisioned,first,ended;
     private int score = 0;
+   
     // Use this for initialization
     void Start () {
         Debug.Log("Start");
         first = true;
         rb = GetComponent<Rigidbody>();
         InitialPosition = transform.position;
-        /**
-        UIScore.SetText("Score: 0");
-        UIScoreAlert.enabled = false;
-        UIBoost.enabled = false;**/
-        cc.speedGlitch(false);
+        cc.SpeedGlitch(false);
     }
     //Handles the speed applied to the Car, and the scene restart.
     void Update() {
@@ -107,36 +104,44 @@ public class PlayerMovement : MonoBehaviour {
                 {
                     tr = Time.realtimeSinceStartup;
                     first = false;
-                    cc.speedGlitch(true);
+                    MaxZ = ForceZ * speed;
+                    cc.SpeedGlitch(true);
                 }
                 t = Time.realtimeSinceStartup;
                 //Acelleration in process
-                if (t-tr < 1.5f)
+                if (t-tr < 3f && !ended)
                 {
-                    rb.velocity = new Vector3(ForceX * (float)h, 0, ForceZ * speed);
+                    rb.velocity = rb.transform.forward * ForceZ;
                     ch.UpdateSpeed(ForceZ * speed);
+                    aux = (float) h * 1.2f;
+                    rb.transform.Rotate(0, aux, 0);
                     if (speed > 1)
                     {
-                        speed -= 0.5f;
+                        speed -= 0.5f * Time.deltaTime;
                     }
                 }
                 //Acelleration ends
                 else
                 {
-                    cc.speedGlitch(false);
+                    cc.SpeedGlitch(false);
                     Debug.Log("Efecto aceleracion " + cc.IsSpeedActive());
                     Acelleration = false;
                     first = true;
                     speed = maxSpeed;
                 }
             }
-            // Applies the speed corresponding
+            // Applies the speed to the direction of the car
             else
             {
-                rb.velocity = new Vector3(ForceX * (float)h, 0, ForceZ);
+                rb.velocity = rb.transform.forward * ForceZ;
+                aux = (float)h * 1.2f;
+                rb.transform.Rotate(0, aux, 0);
                 ch.UpdateSpeed(ForceZ);
             }
-
+            //this works somehow
+            
+            aux = (float)h * 1.2f;
+            cc.UpdateCameraAngle(aux);
         }
         
         
@@ -166,12 +171,13 @@ public class PlayerMovement : MonoBehaviour {
         ch.UpdateSpeed(0);
         ch.UpdateScore(score);
         ch.ActivateScoreAlert(false);
-        cc.speedGlitch(false);
+        cc.SpeedGlitch(false);
     }
     //Restarts game
     public IEnumerator RestartGame(bool manual)
     {
         Debug.Log("Reinicio");
+        ended = true;
         score = 0;
         RestartUI();
         //RestoreBonus();
@@ -179,10 +185,6 @@ public class PlayerMovement : MonoBehaviour {
         if (!manual)
         {
             yield return new WaitForSeconds(1.3f);
-        }
-        else
-        {
-            yield return new WaitForSeconds(0.7f);
         }
         StopAllCoroutines();
         RestartMovement();
