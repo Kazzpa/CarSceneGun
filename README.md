@@ -9,5 +9,7 @@ A simple car scene with simple code so i can learn how to make a simple game usi
 * [Video Screen Glitch by Keijiro](https://github.com/keijiro/KinoGlitch)
 * [Text Mesh Pro](https://assetstore.unity.com/packages/essentials/beta-projects/textmesh-pro-84126)
 * [Standard Assets by Unity](https://assetstore.unity.com/packages/essentials/asset-packs/standard-assets-32351)
+## Needed:
+Unity 2017.3.1f1
 ## Author
 * **Kazzpa** 
